@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.paimingniu.ui.DialogController;
 import com.paimingniu.ui.FXMLDialog;
+import com.paimingniu.ui.LoginInfo;
 import com.paimingniu.ui.MProgressIndicator;
 import com.paimingniu.ui.MTooltip;
 import com.paimingniu.ui.Message;
@@ -59,6 +60,13 @@ public class LoginController implements DialogController {
 	public void initialize() {
 		anchorPane.getChildren().add(mps);
 		mscreen.setMparent(dialog);
+
+		checkboxId.setSelected(LoginInfo.isSelected());
+
+		username.setText(LoginInfo.getEmail());
+
+		password.setText(LoginInfo.getPassword());
+
 		dialog.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			public void handle(WindowEvent event) {
 				new Thread(new Runnable() {
@@ -94,6 +102,12 @@ public class LoginController implements DialogController {
 			return;
 		}
 
+		if (checkboxId.isSelected()) {
+			LoginInfo.setInfo(getEmail(), getPassword(), true);
+		}else{
+			LoginInfo.setInfo(getEmail(), "", false);
+		}
+
 		new Thread(new Runnable() {
 			public void run() {
 
@@ -126,6 +140,7 @@ public class LoginController implements DialogController {
 						case 0:
 							Platform.runLater(new Runnable() {
 								public void run() {
+									LoginInfo.setInfo(getEmail(),"", false);
 									Message.showInfo(dialog, "用户或密码错误！", "信息");
 								}
 							});
@@ -133,6 +148,7 @@ public class LoginController implements DialogController {
 						default:
 							Platform.runLater(new Runnable() {
 								public void run() {
+
 									dialog.close();
 									mscreen.jobDialog().show();
 								}
@@ -142,6 +158,7 @@ public class LoginController implements DialogController {
 					} else {
 						Platform.runLater(new Runnable() {
 							public void run() {
+								LoginInfo.setInfo(getEmail(),"", false);
 								Message.showError(dialog,
 										"系统出错啦！可能它累了，让他休息一会吧 ):", "错误信息");
 							}
@@ -151,10 +168,11 @@ public class LoginController implements DialogController {
 				} catch (Exception e) {
 					Platform.runLater(new Runnable() {
 						public void run() {
+							LoginInfo.setInfo(getEmail(),"", false);
 							Message.showError(dialog, "网络请求失败!", "错误信息");
 						}
 					});
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 
 				Platform.runLater(new Runnable() {
