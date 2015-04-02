@@ -61,7 +61,12 @@ public class LoginController implements DialogController {
 		mscreen.setMparent(dialog);
 		dialog.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			public void handle(WindowEvent event) {
-				HttpUtil.closs();
+				new Thread(new Runnable() {
+					public void run() {
+						HttpUtil.closs();
+					}
+				}).start();
+
 			}
 		});
 	}
@@ -106,8 +111,7 @@ public class LoginController implements DialogController {
 					map.put("password", getPassword());
 
 					String reqreturn = HttpUtil.post(60000,
-							"http://localhost:8081/testB/user/login.do",
-							map);
+							"http://localhost:8081/testB/user/login.do", map);
 
 					@SuppressWarnings("unchecked")
 					StatusEntity<String> sentity = new Gson().fromJson(
