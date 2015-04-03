@@ -1,4 +1,4 @@
-package com.paimingniu.ui.login;
+package com.paimingniu.main;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ import com.paimingniu.driver.Monitor;
 import com.paimingniu.ui.FXMLDialog;
 import com.paimingniu.ui.module.ScreensModule;
 
-public class Login extends Application {
+public class Main extends Application {
 
 	public static FXMLDialog login;
 
