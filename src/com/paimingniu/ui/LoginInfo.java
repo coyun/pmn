@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
+import com.paimingniu.util.DESUtil;
+
 /**
  * @description
  * @author 杨克运
@@ -13,6 +15,8 @@ import java.util.Properties;
  * @version V1.0
  */
 public class LoginInfo {
+
+	private final static String KEY = "PAIMINGNIU_KEY_888888";
 
 	public static Properties inLoad() {
 
@@ -42,7 +46,7 @@ public class LoginInfo {
 			FileOutputStream fos = new FileOutputStream(new File(
 					LoginInfo.class.getResource("loginInfo.properties")
 							.getPath()).getPath());
-			prop.store(fos, "Copyright (c) ");
+			prop.store(fos, "Copyright (c) paimingniu ");
 			fos.flush();
 			fos.close();// 关闭流
 
@@ -56,7 +60,17 @@ public class LoginInfo {
 
 		Properties prop = new Properties();// 属性集合对象
 		prop.setProperty("email", email);
-		prop.setProperty("password", p);
+
+		try {
+			if (p != null && !"".equals(p.trim())) {
+				String encryptData = DESUtil.encrypt(p, KEY);
+				prop.setProperty("password", encryptData);
+			}
+		} catch (Exception e) {
+			isSelected = false;
+			// e1.printStackTrace();
+		}
+
 		prop.setProperty("isselected", "" + isSelected);
 
 		try {
@@ -64,7 +78,7 @@ public class LoginInfo {
 			FileOutputStream fos = new FileOutputStream(new File(
 					LoginInfo.class.getResource("loginInfo.properties")
 							.getPath()).getPath());
-			prop.store(fos, "Copyright (c) ");
+			prop.store(fos, "Copyright (c) paimingniu ");
 			fos.flush();
 			fos.close();// 关闭流
 
@@ -80,13 +94,21 @@ public class LoginInfo {
 	}
 
 	public static String getPassword() {
-
-		return (String) inLoad().get("password");
+		String psw = (String) inLoad().get("password");
+		try {
+			if (psw != null && !"".equals(psw.trim())) {
+				psw = DESUtil.decrypt(psw, KEY);
+			}
+		} catch (Exception e) {
+			psw="";
+			// e.printStackTrace();
+		}
+		return psw;
 	}
 
 	public static boolean isSelected() {
-		String b=(String) inLoad().get("isselected");
-		return (b==null?false:b.equals("true"));
+		String b = (String) inLoad().get("isselected");
+		return (b == null ? false : b.equals("true"));
 	}
 
 }

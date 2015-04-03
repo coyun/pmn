@@ -44,11 +44,14 @@ public class LoginController implements DialogController {
 	CheckBox checkboxId;
 
 	public String getEmail() {
+
 		return username.getText();
 	}
 
 	public String getPassword() {
+
 		return password.getText();
+
 	}
 
 	private final MProgressIndicator mps = new MProgressIndicator();
@@ -87,7 +90,8 @@ public class LoginController implements DialogController {
 	@FXML
 	public void login() {
 
-		if ("".equals(getEmail().trim())
+		if (getEmail() == null
+				|| "".equals(getEmail())
 				|| !getEmail()
 						.matches(
 								"^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-z0-9A-Z]{2,}$")
@@ -96,15 +100,16 @@ public class LoginController implements DialogController {
 			return;
 		}
 
-		if ("".equals(getPassword()) || getPassword().length() < 6
-				|| getPassword().length() > 12) {
+		if (getPassword() == null || "".equals(getPassword())
+				|| getPassword() != null && !"".equals(getPassword())
+				&& (getPassword().length() < 6 || getPassword().length() > 12)) {
 			MTooltip.show(dialog, password, "请输入6-12位密码！");
 			return;
 		}
 
 		if (checkboxId.isSelected()) {
 			LoginInfo.setInfo(getEmail(), getPassword(), true);
-		}else{
+		} else {
 			LoginInfo.setInfo(getEmail(), "", false);
 		}
 
@@ -140,7 +145,7 @@ public class LoginController implements DialogController {
 						case 0:
 							Platform.runLater(new Runnable() {
 								public void run() {
-									LoginInfo.setInfo(getEmail(),"", false);
+									LoginInfo.setInfo(getEmail(), "", false);
 									Message.showInfo(dialog, "用户或密码错误！", "信息");
 								}
 							});
@@ -158,7 +163,7 @@ public class LoginController implements DialogController {
 					} else {
 						Platform.runLater(new Runnable() {
 							public void run() {
-								LoginInfo.setInfo(getEmail(),"", false);
+								LoginInfo.setInfo(getEmail(), "", false);
 								Message.showError(dialog,
 										"系统出错啦！可能它累了，让他休息一会吧 ):", "错误信息");
 							}
@@ -168,11 +173,11 @@ public class LoginController implements DialogController {
 				} catch (Exception e) {
 					Platform.runLater(new Runnable() {
 						public void run() {
-							LoginInfo.setInfo(getEmail(),"", false);
+							LoginInfo.setInfo(getEmail(), "", false);
 							Message.showError(dialog, "网络请求失败!", "错误信息");
 						}
 					});
-					//e.printStackTrace();
+					// e.printStackTrace();
 				}
 
 				Platform.runLater(new Runnable() {
