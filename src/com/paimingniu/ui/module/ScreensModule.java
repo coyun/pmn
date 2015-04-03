@@ -76,7 +76,7 @@ public class ScreensModule {
 	}
 
 	public Parent jobTableParent(String id,FXMLDialog dialog) {
-		return FXMLDialog.getParent(jobTable,dialog, JobTableController.class.getResource(id+".fxml"));
+		return FXMLDialog.getParent(jobTable,dialog, JobController.class.getResource(id+".fxml"));
 	}
 
 }
