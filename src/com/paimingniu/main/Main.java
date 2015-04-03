@@ -18,7 +18,6 @@ import com.paimingniu.ui.module.ScreensModule;
 
 public class Main extends Application {
 
-	public static FXMLDialog login;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -34,7 +33,10 @@ public class Main extends Application {
 
 		ScreensModule screens = inj.getInstance(ScreensModule.class);
 		screens.setPrimaryStage(primaryStage);
-		screens.loginDialog().show();
+		FXMLDialog ms=screens.loginDialog();
+		ms.setResizable(false);
+		ms.show();
+		
 
 	}
 

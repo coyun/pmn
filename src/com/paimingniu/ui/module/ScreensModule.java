@@ -7,6 +7,7 @@ import javafx.stage.StageStyle;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.paimingniu.ui.FXMLDialog;
+import com.paimingniu.ui.Tray;
 import com.paimingniu.ui.job.JobController;
 import com.paimingniu.ui.job.JobTableController;
 import com.paimingniu.ui.login.LoginController;
@@ -50,6 +51,7 @@ public class ScreensModule {
 	@Inject
 	private JobTableController jobTable;
 
+	
 	public FXMLDialog loginDialog() {
 		return new FXMLDialog("用户登录", login,
 				LoginController.class.getResource("login.fxml"), primaryStage,
@@ -75,6 +77,11 @@ public class ScreensModule {
 				StageStyle.DECORATED);
 	}
 
+	public Tray tray(){
+		return new Tray();
+	}
+	
+	
 	public Parent jobTableParent(String id,FXMLDialog dialog) {
 		return FXMLDialog.getParent(jobTable,dialog, JobController.class.getResource(id+".fxml"));
 	}

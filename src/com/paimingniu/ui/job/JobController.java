@@ -3,6 +3,7 @@ package com.paimingniu.ui.job;
 import java.util.HashMap;
 import java.util.Map;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -18,7 +19,6 @@ import com.paimingniu.ui.DialogController;
 import com.paimingniu.ui.FXMLDialog;
 import com.paimingniu.ui.MProgressIndicator;
 import com.paimingniu.ui.module.ScreensModule;
-import com.paimingniu.util.HttpUtil;
 
 public class JobController implements DialogController {
 
@@ -43,17 +43,20 @@ public class JobController implements DialogController {
 	public void initialize() {
 
 		borderPane.getChildren().add(mps);
-	
-		mscreen.setMparent(dialog);
-		
-		
-		dialog.setOnShown(new EventHandler<WindowEvent>(){
 
+		mscreen.setMparent(dialog);
+
+		mscreen.tray().enableTray(dialog);
+
+	
+
+		dialog.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent event) {
-				HttpUtil.closs();
+				Platform.setImplicitExit(false);
+				dialog.hide();
+				event.consume();
 			}
-			
 		});
 
 		tabPane.getSelectionModel().clearSelection();
@@ -63,7 +66,7 @@ public class JobController implements DialogController {
 					public void changed(
 							ObservableValue<? extends Tab> observable,
 							Tab oldValue, Tab newValue) {
-					
+
 						if (newValue.getContent() == null) {
 
 							Parent parent = (Parent) ControllerMap.get(newValue

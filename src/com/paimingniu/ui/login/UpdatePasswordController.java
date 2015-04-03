@@ -21,6 +21,7 @@ import com.paimingniu.ui.Message;
 import com.paimingniu.ui.module.ScreensModule;
 import com.paimingniu.util.HttpUtil;
 import com.paimingniu.util.StatusEntity;
+import com.paimingniu.util.URLInfo;
 
 public class UpdatePasswordController implements DialogController {
 
@@ -113,16 +114,16 @@ public class UpdatePasswordController implements DialogController {
 					map.put("code", getCode());
 
 					String reqreturn = HttpUtil.post(60000,
-							"http://localhost:8081/testB/user/updatePSW.do",
+							URLInfo.getRUL()+"user/updatePSW.do",
 							map);
 
 					@SuppressWarnings("unchecked")
-					StatusEntity<String> sentity = new Gson().fromJson(
+					StatusEntity<String,?> sentity = new Gson().fromJson(
 							reqreturn, StatusEntity.class);
 
-					if (sentity.getStatus() == 200) {
+					if (sentity.getCode() == 200) {
 
-						int ret = Integer.valueOf(sentity.getNodes().replace(
+						int ret = Integer.valueOf(sentity.getStatus().replace(
 								"A", ""));
 
 						switch (ret) {
@@ -231,14 +232,14 @@ public class UpdatePasswordController implements DialogController {
 						map.put("email", getEmail());
 
 						String reqreturn = HttpUtil.post(60000,
-								"http://localhost:8081/testB/email/code.do",
+								URLInfo.getRUL()+"email/code.do",
 								map);
 
 						@SuppressWarnings("unchecked")
-						StatusEntity<Boolean> sentity = new Gson().fromJson(
+						StatusEntity<Boolean,?> sentity = new Gson().fromJson(
 								reqreturn, StatusEntity.class);
 
-						if (!(sentity.getStatus() == 200 && sentity.getNodes())) {
+						if (!(sentity.getCode() == 200 && sentity.getStatus())) {
 
 							Platform.runLater(new Runnable() {
 								public void run() {

@@ -23,6 +23,7 @@ import com.paimingniu.ui.Message;
 import com.paimingniu.ui.module.ScreensModule;
 import com.paimingniu.util.HttpUtil;
 import com.paimingniu.util.StatusEntity;
+import com.paimingniu.util.URLInfo;
 
 public class LoginController implements DialogController {
 
@@ -129,16 +130,16 @@ public class LoginController implements DialogController {
 					map.put("email", getEmail());
 					map.put("password", getPassword());
 
-					String reqreturn = HttpUtil.post(60000,
-							"http://localhost:8081/testB/user/login.do", map);
+					String reqreturn = HttpUtil.post(60000, URLInfo.getRUL()
+							+ "user/login.do", map);
 
 					@SuppressWarnings("unchecked")
-					StatusEntity<String> sentity = new Gson().fromJson(
+					StatusEntity<String, ?> sentity = new Gson().fromJson(
 							reqreturn, StatusEntity.class);
 
-					if (sentity.getStatus() == 200) {
+					if (sentity.getCode() == 200) {
 
-						int ret = Integer.valueOf(sentity.getNodes().replace(
+						int ret = Integer.valueOf(sentity.getStatus().replace(
 								"A", ""));
 
 						switch (ret) {

@@ -1,65 +1,44 @@
 package com.paimingniu.util;
 
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
 
 import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.DESKeySpec;
-
-import org.apache.commons.codec.binary.Base64;
+import javax.crypto.spec.SecretKeySpec;
 
 public class DESUtil {
-
-	// 算法名称
-	public static final String KEY_ALGORITHM = "DES";
-	// 算法名称/加密模式/填充方式
-	// DES共有四种工作模式-->>ECB：电子密码本模式、CBC：加密分组链接模式、CFB：加密反馈模式、OFB：输出反馈模式
-	public static final String CIPHER_ALGORITHM = "DES/ECB/NoPadding";
+	
 
 	/**
+	 * 将16进制转换为二进制
 	 * 
-	 * 生成密钥key对象
-	 * 
-	 * @param KeyStr
-	 *            密钥字符串
-	 * @return 密钥对象
-	 * @throws InvalidKeyException
-	 * @throws NoSuchAlgorithmException
-	 * @throws InvalidKeySpecException
-	 * @throws Exception
+	 * @param hexStr
+	 * @return
 	 */
-	private static SecretKey keyGenerator(String keyStr) throws Exception {
-		byte input[] = HexString2Bytes(keyStr);
-		DESKeySpec desKey = new DESKeySpec(input);
-		// 创建一个密匙工厂，然后用它把DESKeySpec转换成
-		SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
-		SecretKey securekey = keyFactory.generateSecret(desKey);
-		return securekey;
-	}
-
-	private static int parse(char c) {
-		if (c >= 'a')
-			return (c - 'a' + 10) & 0x0f;
-		if (c >= 'A')
-			return (c - 'A' + 10) & 0x0f;
-		return (c - '0') & 0x0f;
-	}
-
-	// 从十六进制字符串到字节数组转换
-	public static byte[] HexString2Bytes(String hexstr) {
-		byte[] b = new byte[hexstr.length() / 2];
-		int j = 0;
-		for (int i = 0; i < b.length; i++) {
-			char c0 = hexstr.charAt(j++);
-			char c1 = hexstr.charAt(j++);
-			b[i] = (byte) ((parse(c0) << 4) | parse(c1));
+	public static byte[] parseHexStr2Byte(String hexStr) {
+		if (hexStr.length() < 1)
+			return null;
+		byte[] result = new byte[hexStr.length() / 2];
+		for (int i = 0; i < hexStr.length() / 2; i++) {
+			int high = Integer.parseInt(hexStr.substring(i * 2, i * 2 + 1), 16);
+			int low = Integer.parseInt(hexStr.substring(i * 2 + 1, i * 2 + 2),
+					16);
+			result[i] = (byte) (high * 16 + low);
 		}
-		return b;
+		return result;
+	}
+
+	public static String parseByte2HexStr(byte buf[]) {
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < buf.length; i++) {
+			String hex = Integer.toHexString(buf[i] & 0xFF);
+			if (hex.length() == 1) {
+				hex = '0' + hex;
+			}
+			sb.append(hex.toUpperCase());
+		}
+		return sb.toString();
 	}
 
 	/**
@@ -71,21 +50,19 @@ public class DESUtil {
 	 *            密钥
 	 * @return 加密后的数据
 	 */
-	public static String encrypt(String data, String key) throws Exception {
-		Key deskey = keyGenerator(key);
-		// 实例化Cipher对象，它用于完成实际的加密操作
-		Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
-		SecureRandom random = new SecureRandom();
-		// 初始化Cipher对象，设置为加密模式
-		cipher.init(Cipher.ENCRYPT_MODE, deskey, random);
-		byte[] results = cipher.doFinal(data.getBytes());
-		// 该部分是为了与加解密在线测试网站（http://tripledes.online-domain-tools.com/）的十六进制结果进行核对
-		// for (int i = 0; i < results.length; i++) {
-		// System.out.print(results[i] + " ");
-		// }
-		// System.out.println();
-		// 执行加密操作。加密后的结果通常都会用Base64编码进行传输
-		return Base64.encodeBase64String(results);
+	public static String encrypt(String data, String password) throws Exception {
+
+		KeyGenerator kgen = KeyGenerator.getInstance("AES");
+		kgen.init(128, new SecureRandom(password.getBytes()));
+		SecretKey secretKey = kgen.generateKey();
+		byte[] enCodeFormat = secretKey.getEncoded();
+		SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");
+		Cipher cipher = Cipher.getInstance("AES");// 创建密码器
+		byte[] byteContent = data.getBytes("utf-8");
+		cipher.init(Cipher.ENCRYPT_MODE, key);// 初始化
+		byte[] result = cipher.doFinal(byteContent);
+		return parseByte2HexStr(result); // 加密
+
 	}
 
 	/**
@@ -97,17 +74,22 @@ public class DESUtil {
 	 *            密钥
 	 * @return 解密后的数据
 	 */
-	public static String decrypt(String data, String key) throws Exception {
-		Key deskey = keyGenerator(key);
-		Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
-		// 初始化Cipher对象，设置为解密模式
-		cipher.init(Cipher.DECRYPT_MODE, deskey);
-		// 执行解密操作
-		return new String(cipher.doFinal(Base64.decodeBase64(data)));
+	public static String decrypt(String data, String password) throws Exception {
+		
+		KeyGenerator kgen = KeyGenerator.getInstance("AES");
+		kgen.init(128, new SecureRandom(password.getBytes()));
+		SecretKey secretKey = kgen.generateKey();
+		byte[] enCodeFormat = secretKey.getEncoded();
+		SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");
+		Cipher cipher = Cipher.getInstance("AES");// 创建密码器
+		cipher.init(Cipher.DECRYPT_MODE, key);// 初始化
+		byte[] result = cipher.doFinal(parseHexStr2Byte(data));
+		return new String(result); // 加密
+
 	}
 
 	// public static void main(String[] args) throws Exception {
-	// String source = "amigoxie";
+	// String source = "123456";
 	// System.out.println("原文: " + source);
 	// String key = "A1B2C3D4E5F60708";
 	// String encryptData = encrypt(source, key);

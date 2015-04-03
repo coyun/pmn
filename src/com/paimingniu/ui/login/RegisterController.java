@@ -22,6 +22,7 @@ import com.paimingniu.ui.module.ScreensModule;
 import com.paimingniu.util.HttpUtil;
 import com.paimingniu.util.LocalInfo;
 import com.paimingniu.util.StatusEntity;
+import com.paimingniu.util.URLInfo;
 
 public class RegisterController implements DialogController {
 
@@ -145,15 +146,15 @@ public class RegisterController implements DialogController {
 					map.put("ip", LocalInfo.getIp());
 					map.put("mac", LocalInfo.getMac());
 
-					String reqreturn = HttpUtil.post(60000, "http://localhost:8081/testB/user/register.do", map);
+					String reqreturn = HttpUtil.post(60000, URLInfo.getRUL()+"user/register.do", map);
 					
 					@SuppressWarnings("unchecked")
-					StatusEntity<String> sentity = new Gson().fromJson(
+					StatusEntity<String,?> sentity = new Gson().fromJson(
 							reqreturn, StatusEntity.class);
 						
-					if (sentity.getStatus() == 200) {
+					if (sentity.getCode() == 200) {
 
-						int ret = Integer.valueOf(sentity.getNodes().replace(
+						int ret = Integer.valueOf(sentity.getStatus().replace(
 								"A", ""));
 
 						switch (ret) {
@@ -269,15 +270,15 @@ public class RegisterController implements DialogController {
 						
 						map.put("email", getEmail());
 						
-						String reqreturn = HttpUtil.post(60000,"http://localhost:8081/testB/email/code.do", map);
+						String reqreturn = HttpUtil.post(60000,URLInfo.getRUL()+"email/code.do", map);
 						
 
 						
 						@SuppressWarnings("unchecked")
-						StatusEntity<Boolean> sentity = new Gson().fromJson(
+						StatusEntity<Boolean,?> sentity = new Gson().fromJson(
 								reqreturn, StatusEntity.class);
 
-						if (!(sentity.getStatus() == 200 && sentity.getNodes())) {
+						if (!(sentity.getCode() == 200 && sentity.getStatus())) {
 
 							Platform.runLater(new Runnable() {
 								public void run() {

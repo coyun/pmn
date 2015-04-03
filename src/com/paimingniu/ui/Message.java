@@ -17,6 +17,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import com.paimingniu.image.IMG;
+
 public class Message {
 
 	public enum Response {
@@ -35,7 +37,7 @@ public class Message {
 			initOwner(owner);
 			setResizable(false);
 			setScene(scene);
-			icon.setImage(new Image(getClass().getResourceAsStream(iconFile)));
+			icon.setImage(new Image(IMG.class.getResourceAsStream(iconFile)));
 		}
 
 		public void showDialog() {

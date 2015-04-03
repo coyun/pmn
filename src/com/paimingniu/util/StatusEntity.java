@@ -7,27 +7,29 @@ package com.paimingniu.util;
  * @date 2015年4月1日
  * @version V1.0
  */
-public class StatusEntity<T> {
+public class StatusEntity<R, N> {
 
-	private int status;
+	private int code;
 
 	private String msg;
 
-	private T nodes;
+	private R status;
+
+	private N nodes;
 
 	/**
-	 * @return the status
+	 * @return the code
 	 */
-	public int getStatus() {
-		return status;
+	public int getCode() {
+		return code;
 	}
 
 	/**
-	 * @param status
-	 *            the status to set
+	 * @param code
+	 *            the code to set
 	 */
-	public void setStatus(int status) {
-		this.status = status;
+	public void setCode(int code) {
+		this.code = code;
 	}
 
 	/**
@@ -46,9 +48,24 @@ public class StatusEntity<T> {
 	}
 
 	/**
+	 * @return the status
+	 */
+	public R getStatus() {
+		return status;
+	}
+
+	/**
+	 * @param status
+	 *            the status to set
+	 */
+	public void setStatus(R status) {
+		this.status = status;
+	}
+
+	/**
 	 * @return the nodes
 	 */
-	public T getNodes() {
+	public N getNodes() {
 		return nodes;
 	}
 
@@ -56,7 +73,7 @@ public class StatusEntity<T> {
 	 * @param nodes
 	 *            the nodes to set
 	 */
-	public void setNodes(T nodes) {
+	public void setNodes(N nodes) {
 		this.nodes = nodes;
 	}
 

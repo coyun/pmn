@@ -1,6 +1,7 @@
 package com.paimingniu.ui;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Properties;
@@ -18,19 +19,25 @@ public class LoginInfo {
 
 	private final static String KEY = "PAIMINGNIU_KEY_888888";
 
-	public static Properties inLoad() {
+	
+	public static String getAbspath() {
+		String abspath = System.getProperty("user.dir") + "/libs/bin/";
+		return abspath;
+	}
+	
+	
+	private static Properties inLoad() {
 
 		Properties prop = new Properties();// 属性集合对象
 
 		try {
-
-			InputStream in = LoginInfo.class
-					.getResourceAsStream("loginInfo.properties");
+			String abspath = getAbspath() + "l.properties";
+			InputStream in =new FileInputStream(new File(abspath));
 			prop.load(in);// 将属性文件流装载到Properties对象中
 			in.close();// 关闭流
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		return prop;
 	}
@@ -42,16 +49,16 @@ public class LoginInfo {
 		prop.setProperty("password", p);
 
 		try {
-
-			FileOutputStream fos = new FileOutputStream(new File(
-					LoginInfo.class.getResource("loginInfo.properties")
-							.getPath()).getPath());
+			
+			String abspath = getAbspath() + "l.properties";
+			FileOutputStream fos = new FileOutputStream(abspath);
+			
 			prop.store(fos, "Copyright (c) paimingniu ");
 			fos.flush();
 			fos.close();// 关闭流
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 	}
@@ -74,16 +81,15 @@ public class LoginInfo {
 		prop.setProperty("isselected", "" + isSelected);
 
 		try {
-
-			FileOutputStream fos = new FileOutputStream(new File(
-					LoginInfo.class.getResource("loginInfo.properties")
-							.getPath()).getPath());
+			String abspath = getAbspath() + "l.properties";
+			FileOutputStream fos = new FileOutputStream(abspath);
+			
 			prop.store(fos, "Copyright (c) paimingniu ");
 			fos.flush();
 			fos.close();// 关闭流
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 	}

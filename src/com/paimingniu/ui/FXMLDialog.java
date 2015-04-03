@@ -6,11 +6,14 @@ import java.net.URL;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import javafx.util.Callback;
+
+import com.paimingniu.image.IMG;
 
 public class FXMLDialog extends Stage {
 
@@ -24,6 +27,7 @@ public class FXMLDialog extends Stage {
 		super(style);
 		initOwner(owner);
 		setTitle(title);
+		getIcons().add(new Image(IMG.class.getResourceAsStream("niu-60x60.png")));
 		initModality(Modality.WINDOW_MODAL);
 		FXMLLoader loader = new FXMLLoader(fxml);
 		try {
