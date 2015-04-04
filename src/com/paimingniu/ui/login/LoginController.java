@@ -178,7 +178,7 @@ public class LoginController implements DialogController {
 							Message.showError(dialog, "网络请求失败!", "错误信息");
 						}
 					});
-					// e.printStackTrace();
+					 e.printStackTrace();
 				}
 
 				Platform.runLater(new Runnable() {
