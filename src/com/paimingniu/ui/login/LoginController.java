@@ -1,5 +1,6 @@
 package com.paimingniu.ui.login;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +14,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.WindowEvent;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
+import com.paimingniu.entity.Users;
 import com.paimingniu.ui.DialogController;
 import com.paimingniu.ui.FXMLDialog;
 import com.paimingniu.ui.LoginInfo;
@@ -73,11 +76,11 @@ public class LoginController implements DialogController {
 
 		dialog.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			public void handle(WindowEvent event) {
-				new Thread(new Runnable() {
-					public void run() {
+//				new Thread(new Runnable() {
+//					public void run() {
 						HttpUtil.closs();
-					}
-				}).start();
+//					}
+//				}).start();
 
 			}
 		});
@@ -130,17 +133,22 @@ public class LoginController implements DialogController {
 					map.put("email", getEmail());
 					map.put("password", getPassword());
 
-					String reqreturn = HttpUtil.post(60000, URLInfo.getRUL()
-							+ "user/login.do", map);
+					final String reqreturn = HttpUtil.post(60000,
+							URLInfo.getRUL() + "user/login.do", map);
 
-					@SuppressWarnings("unchecked")
-					StatusEntity<String, ?> sentity = new Gson().fromJson(
-							reqreturn, StatusEntity.class);
+					StatusEntity<String, Users> sentity = new Gson().fromJson(
+							reqreturn,
+							new TypeToken<StatusEntity<String, Users>>() {
+							}.getType());
 
 					if (sentity.getCode() == 200) {
 
 						int ret = Integer.valueOf(sentity.getStatus().replace(
 								"A", ""));
+
+						if (sentity.getNodes() != null) {
+							Users users = sentity.getNodes();
+						}
 
 						switch (ret) {
 						case 0:
@@ -178,7 +186,7 @@ public class LoginController implements DialogController {
 							Message.showError(dialog, "网络请求失败!", "错误信息");
 						}
 					});
-					 e.printStackTrace();
+					e.printStackTrace();
 				}
 
 				Platform.runLater(new Runnable() {

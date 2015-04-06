@@ -1,6 +1,9 @@
 package com.paimingniu.driver;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -34,26 +37,54 @@ public class IDriver extends Driver{
 		
 		capabilities.setCapability(InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING, false);
 	
-//		capabilities.setCapability(InternetExplorerDriver.FORCE_CREATE_PROCESS, true);  
-//		capabilities.setCapability(InternetExplorerDriver.IE_SWITCHES, "-minimize");
+
 		try{
 		driver = new InternetExplorerDriver(service, capabilities);
-		driver.manage().window().setSize(new Dimension(600, 400)); 
+		driver.manage().window().setSize(new Dimension(900,700)); 
 		}catch(Exception e){}
 		
 		}
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		Driver mc = new IDriver();
 		mc.start();
+		
+		mc.driver.get("http://www.taobao.com");
+		
+		Thread.sleep(2000);
+		
+		WebElement q = mc.driver.findElement(By.id("q"));
+		if(q!=null)q.sendKeys("男装");
+		
+		Thread.sleep(2000);
+		
+		WebElement btn = mc.driver.findElement(By.className("btn-search"));
+		if(btn!=null)btn.click();
+		
+		Thread.sleep(2000);
+		
+		
+		WebElement link = mc.driver.findElement(By.xpath("//a[contains(@href,'42690338601')]"));
+		if(link!=null){
+			JavascriptExecutor js = (JavascriptExecutor) mc.driver;
+			js.executeScript("arguments[0].target=''",link);
+			link.click();
+		}
+		
+		long h= (Long) ((JavascriptExecutor) mc.driver).executeScript("return document.body.scrollHeight", "");
+		
+		((JavascriptExecutor) mc.driver).executeScript("window.scrollTo(0,200);return true", "");
+		
+		System.out.println(h+"=================");
+		
+		Thread.sleep(2000);
+		
 		System.out.println(mc.getHandles().size());
-		try {
+		
 			Thread.sleep(5000);
 			mc.stop();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		
 	}
 
 }

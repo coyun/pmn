@@ -14,7 +14,6 @@ import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 
 import com.paimingniu.image.IMG;
-import com.paimingniu.ui.job.JobController;
 import com.paimingniu.util.HttpUtil;
 
 /**
@@ -47,12 +46,7 @@ public class Tray {
 
 					SystemTray.getSystemTray().remove(trayIcon);
 
-					new Thread(new Runnable() {
-						public void run() {
-							HttpUtil.closs();
-						}
-					}).start();
-
+					HttpUtil.closs();
 					Platform.exit();
 
 					return;

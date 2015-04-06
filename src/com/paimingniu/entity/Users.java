@@ -9,9 +9,8 @@ import java.io.Serializable;
  * @date 2015年1月5日 下午2:28:27
  * @version V1.0
  */
-public class Users implements Serializable {
+public class Users {
 
-	private static final long serialVersionUID = 1L;
 	private long id;
 	private String email;
 	private String password;
