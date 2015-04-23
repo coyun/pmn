@@ -25,7 +25,9 @@ public class Handle {
 		map.put(2, new Node("44187052754","b",1000));
 		map.put(3, new Node("#J_Reviews","c",1000));
 		
-		
+		for(Integer k:map.keySet()){
+			System.out.println(new Gson().toJson(map.get(k)));
+		}
 		
 		System.out.println(new Gson().toJson(map));
 		
